@@ -13,9 +13,6 @@
                 <a href="{{ route('dashboard') }}" class="font-bold">Quản lý thiết bị</a>
                 <a href="{{ route('rooms.index') }}" class="text-sm hover:underline">Phòng học</a>
                 <a href="{{ route('devices.index') }}" class="text-sm hover:underline">Thiết bị</a>
-                @if (auth()->user()->isAdmin())
-                    <a href="{{ route('admin') }}" class="text-sm hover:underline">Quản trị</a>
-                @endif
             </div>
             <form method="POST" action="{{ route('logout') }}" class="flex items-center gap-3 text-sm">
                 @csrf

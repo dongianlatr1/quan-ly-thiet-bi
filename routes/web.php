@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\RoomController;
@@ -23,8 +25,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index');
     Route::get('/devices', [DeviceController::class, 'index'])->name('devices.index');
 
+    // Đặt lịch mượn phòng, thiết bị (giảng viên và admin)
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+
+    // Sự cố
+    Route::get('/issues', function () {
+        return view('su-co');
+    })->name('issues.index');
+
+    // Thống kê
+    Route::get('/statistics', function () {
+        return view('thong-ke');
+    })->name('statistics.index');
+
     Route::middleware('role:admin')->group(function () {
-        Route::view('/admin', 'admin')->name('admin');
+        Route::get('/admin', function () {
+            $users = \App\Models\User::all();
+
+            return view('admin', compact('users'));
+        })->name('admin');
+
+        // Duyệt, từ chối đặt lịch
+        Route::get('/admin/bookings', [AdminBookingController::class, 'index'])->name('admin.bookings.index');
+        Route::patch('/admin/bookings/{booking}/approve', [AdminBookingController::class, 'approve'])->name('admin.bookings.approve');
+        Route::patch('/admin/bookings/{booking}/reject', [AdminBookingController::class, 'reject'])->name('admin.bookings.reject');
 
         Route::patch('/rooms/{room}/lock', [RoomController::class, 'toggleLock'])->name('rooms.lock');
         Route::resource('rooms', RoomController::class)->except(['index', 'show']);
