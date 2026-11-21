@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,10 +32,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
 
-    // Sự cố
-    Route::get('/issues', function () {
-        return view('su-co');
-    })->name('issues.index');
+    // Báo cáo sự cố thiết bị (kèm hình ảnh)
+    Route::get('/issues', [IncidentController::class, 'index'])->name('issues.index');
+    Route::get('/issues/create', [IncidentController::class, 'create'])->name('issues.create');
+    Route::post('/issues', [IncidentController::class, 'store'])->name('issues.store');
 
     // Thống kê
     Route::get('/statistics', function () {
